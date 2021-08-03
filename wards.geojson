@@ -8,7 +8,7 @@
       "properties": {
         "OBJECT_TYPE": "WARD",
         "ID": "WARD1",
-        "CONTACT": "ward-wg-a@org.com"
+        "WORKGP": "ward-wg-a"
       },
       "geometry": {
         "type": "Polygon",
@@ -79,7 +79,7 @@
       "properties": {
         "OBJECT_TYPE": "WARD",
         "ID": "WARD2",
-        "CONTACT": "wardwg-a@org.com"
+        "WORKGP": "ward-wg-a"
       },
       "geometry": {
         "type": "Polygon",
@@ -158,7 +158,7 @@
       "properties": {
         "OBJECT_TYPE": "WARD",
         "ID": "WARD3",
-        "CONTACT": "ward-wg-b@org.com"
+        "WORKGP": "ward-wg-b"
       },
       "geometry": {
         "type": "Polygon",

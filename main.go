@@ -1,35 +1,34 @@
 package main
-
 import (
 	"flag"
-	"config"
 	//"io"
 	"io/ioutil"
 	"log"
 
-	"net/http"
-	import "github.com/gin-gonic/gin"
+// 	"net/http"
+// 	"github.com/gin-gonic/gin"
 
 	"github.com/paulmach/orb"
 	"github.com/paulmach/orb/geojson"
 	"github.com/paulmach/orb/planar"
 )
 const (
-	GEO_FILE = "wards.geojson"
+	GEO_FILE = "gis-wards.geojson"
 )
 func main() {
+    log.SetFlags(log.LstdFlags | log.Lmicroseconds)
 	//read cmdline
 	var configFile string
 	flag.StringVar(&configFile, "configFile", "config.yml", "Provid config file path,  e.g c:/my/dir/eftconf.yml")
 	flag.Parse()
 	//Read config
-	var config Config
-	if err := config.readConfig(configFile); err != nil {
-		log.Fatalf("Error reading config file :", configFile, err)
-	} else {
-		log.Println("Config: ", config)
-		log.Println("Check log file for details :", config.AppConfig.LumberjackLogConfig.Filename)
-	}
+// 	var config Config
+// 	if err := config.readConfig(configFile); err != nil {
+// 		log.Fatalf("Error reading config file :", configFile, err)
+// 	} else {
+// 		log.Println("Config: ", config)
+// 		log.Println("Check log file for details :", config.AppConfig.LumberjackLogConfig.Filename)
+// 	}
 	// Load in our geojson file into a feature collection
 	b, _ := ioutil.ReadFile(GEO_FILE)
 	wardFeatures, _ := geojson.UnmarshalFeatureCollection(b)
@@ -62,7 +61,8 @@ func getWards(fc *geojson.FeatureCollection, point orb.Point) bool {
 			if isPoly {
 				if planar.PolygonContains(polygon, point) {
 					//log.Println("Polygon has points" , polygon)
-					log.Println("Feature is :" , feature.Properties)
+					log.Println("Point :" , point)
+					log.Println("At Ward:" , feature.Properties)
 					return true
 				}
 			}
