@@ -2,15 +2,11 @@ package main
 
 import (
 	"flag"
-	"github.com/anborg/go-geojson-ward/api"
-	"github.com/anborg/go-geojson-ward/repo"
 	"os"
-
 	"log"
-
-	// 	"net/http"
-	// 	"github.com/gin-gonic/gin"
-	"github.com/anborg/go-geojson-ward/util"
+	"github.com/anborg/go-gis-ward/api"
+	"github.com/anborg/go-gis-ward/repo"
+	"github.com/anborg/go-gis-ward/util"
 )
 
 const (

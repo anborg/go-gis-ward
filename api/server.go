@@ -1,8 +1,8 @@
 package api
 
 import (
-	"github.com/anborg/go-geojson-ward/repo"
-	"github.com/anborg/go-geojson-ward/util"
+	"github.com/anborg/go-gis-ward/repo"
+	"github.com/anborg/go-gis-ward/util"
 	"github.com/gin-gonic/gin"
 	"github.com/paulmach/orb"
 	"net/http"

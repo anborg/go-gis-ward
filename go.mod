@@ -1,4 +1,4 @@
-module github.com/anborg/go-geojson-ward
+module github.com/anborg/go-gis-ward
 
 go 1.16
 
