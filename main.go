@@ -1,72 +1,51 @@
 package main
+
 import (
 	"flag"
-	//"io"
-	"io/ioutil"
+	"github.com/anborg/go-geojson-ward/api"
+	"github.com/anborg/go-geojson-ward/repo"
+	"os"
+
 	"log"
 
-// 	"net/http"
-// 	"github.com/gin-gonic/gin"
+	// 	"net/http"
+	// 	"github.com/gin-gonic/gin"
+	"github.com/anborg/go-geojson-ward/util"
+)
 
-	"github.com/paulmach/orb"
-	"github.com/paulmach/orb/geojson"
-	"github.com/paulmach/orb/planar"
-)
 const (
-	GEO_FILE = "gis-wards.geojson"
+	GEO_FILE = "gis-wards.json"
 )
+
 func main() {
-    log.SetFlags(log.LstdFlags | log.Lmicroseconds)
+	log.SetFlags(log.LstdFlags | log.Lmicroseconds)
 	//read cmdline
 	var configFile string
-	flag.StringVar(&configFile, "configFile", "config.yml", "Provid config file path,  e.g c:/my/dir/eftconf.yml")
+	flag.StringVar(&configFile, "configFile", "", "Provide config file path,  e.g c:/my/dir/eftconf.yml")
 	flag.Parse()
+	if configFile == "" {
+		log.Println("configFile mandatory: Eg -configFile=/var/conf/config2.yml")
+		os.Exit(1)
+	}
 	//Read config
-// 	var config Config
-// 	if err := config.readConfig(configFile); err != nil {
-// 		log.Fatalf("Error reading config file :", configFile, err)
-// 	} else {
-// 		log.Println("Config: ", config)
-// 		log.Println("Check log file for details :", config.AppConfig.LumberjackLogConfig.Filename)
-// 	}
-	// Load in our geojson file into a feature collection
-	b, _ := ioutil.ReadFile(GEO_FILE)
-	wardFeatures, _ := geojson.UnmarshalFeatureCollection(b)
+	var config util.Config
+	if err := config.New(configFile); err != nil {
+		log.Fatalf("Error reading config file :", configFile, err)
+	} else {
+		log.Println("App port: ", config.App.Port)
+		log.Println("Ward polygons file:", config.App.WardGeoJson)
+	}
 
-	p1 := orb.Point{-79.2498779296875,43.89195472686543}
-	getWards(wardFeatures, p1)
-	p2 := orb.Point{-79.36248779296874,43.847403373019226}
-	getWards(wardFeatures, p2)
-	//helloHandler := func(w http.ResponseWriter, req *http.Request) {
-	//	io.WriteString(w, "Hello, world!\n")
-	//}
-	//
-	//http.HandleFunc("/hello", helloHandler)
-	//log.Println("Listing for requests at http://localhost:8000/hello")
-	//log.Fatal(http.ListenAndServe(":8000", nil))
-}//main
+	var wardRepo repo.Ward
+	if err1 := wardRepo.New(config.App.WardGeoJson); err1 != nil {
+		log.Fatalf("Error reading ward file: ", config.App.WardGeoJson, err1)
+	}
+	server, err := api.NewServer(config, wardRepo)
+	if err != nil {
+		log.Fatal("cannot create server:", err)
+	}
+	if err := server.Start(config.App.Port); err != nil {
+		log.Fatal("cannot start server:", err)
+	}
 
-func getWards(fc *geojson.FeatureCollection, point orb.Point) bool {
-	for _, feature := range fc.Features {
-		// Try on a MultiPolygon to begin
-		multiPoly, isMulti := feature.Geometry.(orb.MultiPolygon)
-		if isMulti {
-			if planar.MultiPolygonContains(multiPoly, point) {
-
-				return true
-			}
-		} else {
-			// Fallback to Polygon
-			polygon, isPoly := feature.Geometry.(orb.Polygon)
-			if isPoly {
-				if planar.PolygonContains(polygon, point) {
-					//log.Println("Polygon has points" , polygon)
-					log.Println("Point :" , point)
-					log.Println("At Ward:" , feature.Properties)
-					return true
-				}
-			}
-		}
-	}//for
-	return false
-}
+} //main
