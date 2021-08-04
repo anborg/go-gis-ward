@@ -11,7 +11,6 @@ import (
 
 type Server struct {
 	config util.Config
-	//store *db.Store
 	router *gin.Engine
 	repo   repo.Ward
 }
@@ -27,7 +26,6 @@ func NewServer(config util.Config, wardRepo repo.Ward) (*Server, error) {
 
 func (this *Server) setupRouter() {
 	router := gin.Default()
-
 	router.GET("/ward/:lat/:lon", this.getWard)
 	this.router = router
 }
@@ -45,5 +43,5 @@ func (this *Server) getWard(ctx *gin.Context) {
 	lon, _ := strconv.ParseFloat(ctx.Param("lon"), 8)
 	point := orb.Point{lat, lon}
 	propJson := this.repo.GetWards(point)
-	ctx.JSON(http.StatusOK, (propJson))
+	ctx.JSON(http.StatusOK, propJson)
 }

@@ -13,18 +13,14 @@ type Ward struct {
 }
 
 func (this *Ward) New(geoJsonPath string) error {
-
-	// Load in our geojson file into a features collection
-	b, _ := ioutil.ReadFile(geoJsonPath)
-	wardFeatures, _ := geojson.UnmarshalFeatureCollection(b)
+	if b, err1 := ioutil.ReadFile(geoJsonPath); err1 != nil {
+		return err1
+	}
+	if wardFeatures, err := geojson.UnmarshalFeatureCollection(b); err != nil {
+		//log.Fatalf("Error reading GIS file :", geojson, err)
+		return err
+	}
 	this.features = wardFeatures
-	//this = &Ward{
-	//	features: wardFeatures,
-	//}
-	p1 := orb.Point{-79.2498779296875, 43.89195472686543}
-	this.GetWards(p1)
-	p2 := orb.Point{-79.36248779296874, 43.847403373019226}
-	this.GetWards(p2)
 	return nil
 }
 
@@ -33,22 +29,17 @@ func (this *Ward) GetWards(point orb.Point) (outJson interface{}) {
 	outJson = new(empty)
 	for _, feature := range this.features.Features {
 		// Try on a MultiPolygon to begin
-		multiPoly, isMulti := feature.Geometry.(orb.MultiPolygon)
-		if isMulti {
+		if multiPoly, isMulti := feature.Geometry.(orb.MultiPolygon); isMulti {
 			if planar.MultiPolygonContains(multiPoly, point) {
 				return
 			}
-		} else {
-			// Fallback to Polygon
-			polygon, isPoly := feature.Geometry.(orb.Polygon)
-			if isPoly {
-				if planar.PolygonContains(polygon, point) {
-					//log.Println("Polygon has points" , polygon)
-					log.Println("Point :", point)
-					log.Println("At Ward:", feature.Properties)
-					//outJson, _ = json.Marshal(feature.Properties)
-					outJson = feature.Properties
-				}
+		}
+		// Fallback to Polygon
+		if polygon, isPoly := feature.Geometry.(orb.Polygon); isPoly {
+			if planar.PolygonContains(polygon, point) {
+				//log.Println("Point :", point)
+				//log.Println("At Ward:", feature.Properties)
+				outJson = feature.Properties
 			}
 		}
 	} //for

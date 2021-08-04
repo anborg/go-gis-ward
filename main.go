@@ -2,15 +2,11 @@ package main
 
 import (
 	"flag"
-	"os"
-	"log"
 	"github.com/anborg/go-gis-ward/api"
 	"github.com/anborg/go-gis-ward/repo"
 	"github.com/anborg/go-gis-ward/util"
-)
-
-const (
-	GEO_FILE = "gis-wards.json"
+	"log"
+	"os"
 )
 
 func main() {
