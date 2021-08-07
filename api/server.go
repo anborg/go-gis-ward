@@ -1,8 +1,8 @@
 package api
 
 import (
-	"github.com/anborg/go-gis-ward/repo"
-	"github.com/anborg/go-gis-ward/util"
+	"../repo"
+	"../util"
 	"github.com/gin-gonic/gin"
 	"github.com/paulmach/orb"
 	"net/http"
@@ -26,6 +26,14 @@ func NewServer(config util.Config, wardRepo repo.Ward) (*Server, error) {
 
 func (this *Server) setupRouter() {
 	router := gin.Default()
+	router.Static("/assets", "./assets")
+    router.LoadHTMLGlob("templates/*")
+    	//router.LoadHTMLFiles("templates/template1.html", "templates/template2.html")
+    	router.GET("/", func(c *gin.Context) {
+    		c.HTML(http.StatusOK, "index.html", gin.H{
+    			"title": "Main website",
+    		})
+    	})
 	router.GET("/ward/:lat/:lon", this.getWard)
 	this.router = router
 }

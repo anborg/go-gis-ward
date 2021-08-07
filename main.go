@@ -2,9 +2,9 @@ package main
 
 import (
 	"flag"
-	"github.com/anborg/go-gis-ward/api"
-	"github.com/anborg/go-gis-ward/repo"
-	"github.com/anborg/go-gis-ward/util"
+	"./api"
+	"./repo"
+	"./util"
 	"log"
 	"os"
 )

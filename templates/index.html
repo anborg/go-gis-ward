@@ -1,0 +1,47 @@
+<html>
+<head>
+    <title>A Leaflet map!</title>
+<!--    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>-->
+<!--    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+
+    <style>
+    #map{ width: 900px; height: 500px; }
+  </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script>
+window.onload = pre_loader;
+
+function pre_loader() {
+  let map = L.map('map');
+  let mmr = L.marker([43.856098,-79.337021]);
+  mmr.bindPopup('Markham ON Canada');
+  mmr.addTo(map);
+
+  // load a tile layer
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?{foo}', {foo: 'bar',
+            attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
+  map.setView([43.856098,-79.337021],12);
+  addGeoJson(map)
+}
+
+async function addGeoJson(map) {
+    const response = await fetch("/assets/gis-wards.json");
+    const data = await response.json();
+    L.geoJson(data).addTo(map);
+}
+
+
+  </script>
+    <p/>
+    <a href="http://localhost:8080/ward/-79.2498779296875/43.89195472686543" target="_blank">Ward-4 (wg2)</a>
+
+    <p/>
+    <a href="http://localhost:8080/ward/-79.36248779296874/43.847403373019226" target="_blank">Ward-8 (wg1)</a>
+</body>
+</html>

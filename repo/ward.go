@@ -5,7 +5,6 @@ import (
 	"github.com/paulmach/orb/geojson"
 	"github.com/paulmach/orb/planar"
 	"io/ioutil"
-	"log"
 )
 
 type Ward struct {
@@ -13,10 +12,10 @@ type Ward struct {
 }
 
 func (this *Ward) New(geoJsonPath string) error {
-	if b, err1 := ioutil.ReadFile(geoJsonPath); err1 != nil {
+	byteJson, err1 := ioutil.ReadFile(geoJsonPath); if err1 != nil {
 		return err1
 	}
-	if wardFeatures, err := geojson.UnmarshalFeatureCollection(b); err != nil {
+	wardFeatures, err := geojson.UnmarshalFeatureCollection(byteJson); if err != nil {
 		//log.Fatalf("Error reading GIS file :", geojson, err)
 		return err
 	}
