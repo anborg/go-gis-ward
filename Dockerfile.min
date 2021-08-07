@@ -1,0 +1,8 @@
+FROM scratch
+WORKDIR /app
+ADD assets ./assets
+ADD templates ./templates
+COPY config1.yml ./
+COPY main-lin ./main
+EXPOSE 8080
+CMD ["./main", "-configFile", "config1.yml"]

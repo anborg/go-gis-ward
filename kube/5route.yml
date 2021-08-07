@@ -1,0 +1,20 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: api-wards #{APP_TEAM}-{APP}
+    org: appteam01
+  name: api-wards
+spec:
+  host: api-wards.apps.pp101.caas.gcp.ford.com
+  port:
+    targetPort: 8080
+  tls:
+    termination: edge
+    #termination: passthrough
+    insecureEdgeTerminationPolicy: Redirect
+  to:
+    kind: Service
+    name: api-wards
+    weight: 100
+  wildcardPolicy: None

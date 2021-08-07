@@ -1,0 +1,92 @@
+<html>
+<head>
+    <title>A Leaflet map!</title>
+    <link crossorigin="" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          rel="stylesheet"/>
+    <script crossorigin=""
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style> #map {
+        width: 900px;
+        height: 500px;
+    } </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+
+    window.onload = pre_loader;
+
+    function pre_loader() {
+
+        let southWest = L.latLng(43.530608, -80.153755);
+        let northEast = L.latLng(44.09444687601181, -78.73409615311029);
+        let bounds = L.latLngBounds(southWest, northEast);
+        center = [43.86682, -79.2663]
+        mapTile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?{foo}', {
+            foo: 'bar',
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        })
+        let map = L.map('map', {
+            center: center,
+            zoom: 11, // default zoom
+            layers: [mapTile],
+            maxBounds: bounds,
+            maxBoundsViscosity: 0.5,
+            minZoom: 9,
+            maxZoom: 19
+        });
+        // map.on('drag', function() {
+        //     map.panInsideBounds(bounds, { animate: false });
+        // });
+        map.on('click', function (event) {
+            var popup = L.popup()
+                .setLatLng(event.latlng)
+                .setContent('<p>If coordinate in feature, show feature prop, and xy <br/>' + event.latlng + '</p>')
+                .openOn(map);
+        });
+        addGeoJson(map)
+    }
+
+    async function addGeoJson(map) {
+        const response = await fetch("/assets/gis-wards.json");
+        const collection = await response.json();
+        var wardSelected
+
+        function wardClicked(e) {
+            if (wardSelected) {// Reset selected to default style
+                e.target.resetStyle(wardSelected)
+            }
+            wardSelected = e.layer
+            wardSelected.bringToFront()
+            wardSelected.setStyle({
+                'color': 'red'
+            })
+            // var popup = L.popup() //TODO this popup did not show up
+            // .setLatLng(e.latlng)
+            // .setContent('<p>'+wardSelected.properties.WARD+'<br/>'+ e.latlng+'</p>')
+            // .openOn(map);
+        }
+
+        function onEachWardFeature(feature, layer) {
+            var label = L.marker(layer.getBounds().getCenter(), {// Put label on each ward feature
+                icon: L.divIcon({
+                    className: 'label',
+                    html: feature.properties.WARD + ', ' + feature.properties.WORKGP,
+                    iconSize: [100, 40]
+                })
+            }).addTo(map);
+            //TODO, popup display {xy, wardinfo} oncliclick location
+            layer.bindPopup('<h3>' + feature.properties.WARD + '</h3><p>WorkGP: ' + feature.properties.WORKGP + '</p>').addTo(map)
+        }
+
+        L.geoJson(collection, {onEachFeature: onEachWardFeature})
+            .on('click', wardClicked)
+            .addTo(map);
+    }
+</script>
+<p/><a href="ward/-79.2498779296875/43.89195472686543" target="_blank">Ward-4 (wg2)</a>
+<p/><a href="ward/-79.36248779296874/43.847403373019226" target="_blank">Ward-8 (wg1)</a>
+</body>
+</html>

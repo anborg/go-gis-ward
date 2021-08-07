@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-wards
+#  creationTimestamp: null
+  labels:
+    app: api-wards
+
+spec:
+  selector:
+    matchLabels:
+      app: api-wards
+
+  replicas: 1
+  strategy: {}
+
+  template:
+    metadata:
+      labels:
+        app: api-wards
+    spec:
+      containers:
+        - name: api-wards
+          image: myorg/api-wards:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+
+status: {}

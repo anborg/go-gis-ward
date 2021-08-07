@@ -16,7 +16,7 @@ func main() {
 	flag.StringVar(&configFile, "configFile", "", "Provide config file path,  e.g c:/my/dir/eftconf.yml")
 	flag.Parse()
 	if configFile == "" {
-		log.Println("configFile mandatory: Eg -configFile=/var/conf/config2.yml")
+		log.Println("configFile mandatory: Eg -configFile=/var/conf/config1.yml")
 		os.Exit(1)
 	}
 	//Read config

@@ -12,16 +12,14 @@ type Ward struct {
 }
 
 func (this *Ward) New(geoJsonPath string) error {
-
-	jsonBytes, err1 := ioutil.ReadFile(geoJsonPath)
+	byteJson, err1 := ioutil.ReadFile(geoJsonPath)
 	if err1 != nil {
 		return err1
 	}
-
-	wardFeatures, err2 := geojson.UnmarshalFeatureCollection(jsonBytes)
-	if err2 != nil {
+	wardFeatures, err := geojson.UnmarshalFeatureCollection(byteJson)
+	if err != nil {
 		//log.Fatalf("Error reading GIS file :", geojson, err)
-		return err2
+		return err
 	}
 	this.features = wardFeatures
 	return nil
