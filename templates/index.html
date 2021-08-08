@@ -50,7 +50,9 @@
     }
 
     async function addGeoJson(map) {
-        const response = await fetch("/assets/gis-wards.json");
+        const wardGeojson = "https://raw.githubusercontent.com/anborg/go-gis-ward/master/assets/gis-wards.json"
+        // const response = await fetch("/assets/gis-wards.json");
+        const response = await fetch(wardGeojson);
         const collection = await response.json();
         var wardSelected
 
